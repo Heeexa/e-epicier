@@ -1,0 +1,115 @@
+{% extends "index.html" %}
+{% load static %}
+
+{%block links%}
+<link rel="stylesheet" href="{% static 'assets/css/style_credit.css' %}">
+{%endblock links%}
+
+{%block content%}
+
+<div class="container">
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="exampleInputUser" class="form-label">Titre</label>
+          {{form.titre}}
+        </div>
+
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">Client</label>
+          {{form.client}}
+          </select>
+        </div> 
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">To Pay</label>
+            {{form.to_pay}}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Payed</label>
+            {{form.payed}}
+            </select>
+          </div>
+          <div class="form-check form-switch">
+            {%if credit.etat%} 
+            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckCheckedDisabled" style="position: unset;" checked disabled>
+            {%else%}
+            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckCheckedDisabled" style="position: unset;" disabled>
+            {%endif%}
+            <label class="form-check-label" for="flexSwitchCheckCheckedDisabled">Payed</label>
+          </div>
+      <div class='row mb-4 mt-4'>
+        <div class='col-lg-6'>   
+          <button type="submit" class="btn btn-outline-warning ">Update</button>
+        </form>
+        </div>
+
+        <div class='col-lg-6'>
+        <form method='POST' name='pay'>
+          {% csrf_token %}
+            <div class="input-group mb-3">
+              <button class="btn btn-outline-success" type="submit" id="button-addon1"><i class="fa-solid fa-money-bill-wave"></i>  Pay</button>
+              <input type="number" name='pay' class="form-control" placeholder="How much..." min = "0" aria-label="Example text with button addon" aria-describedby="button-addon1" step="0.01">
+            </div>
+            
+        </div>
+        </form>
+
+        <div class='col-lg-2' >
+          <a href={% url 'credit-produit' id%}><button type='button' class="btn btn-outline-info"><i class="fa-solid fa-bag-shopping"></i>  Add Products</button></a>
+        </div>
+      </div>
+    
+
+      <div class ='row mb-3'>  
+        <h2 class='col-lg-4'>Order History</h2> 
+        <div class='col'>
+        <input id="search-box"  type="text" class="search-box" name="q" />
+        <label for="search-box"><i class="fa-solid fa-magnifying-glass search-icon"></i></label>
+        <input type="submit" id="search-submit" />
+        </div>
+      </div>
+        <table id="productTable" class = "table">
+            <thead>
+              <tr>
+                <th>Product Name</th>
+                <th>Date</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for produit in produits %}
+              <tr>
+                <td>{{ produit.produit.name }}</td>
+                <td>{{ produit.date }}</td>
+                <td>{{ produit.produit.prix }}</td>
+                
+                <td name="quantity_{{ produit.produit.id }}">{{produit.qnt}}</td>
+                
+                <td><span name='total' class="total">{{ produit.total }}</span></td>
+              </tr>
+              {% endfor %}
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td id='grand-total'></td>
+              </tr>
+            </tbody>
+          </table>
+
+
+</div>
+<script>
+        var grandTotal = 0;
+        var totals = document.querySelectorAll('.total');
+        for (var i = 0; i < totals.length; i++) {
+            grandTotal += parseFloat(totals[i].innerText);
+        }
+        document.querySelector('#grand-total').innerText = grandTotal;
+</script>
+          {%endblock content%}
